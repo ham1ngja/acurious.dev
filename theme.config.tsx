@@ -18,9 +18,6 @@ const config: DocsThemeConfig = {
       </svg>
     ),
   },
-  toc: {
-    backToTop: true,
-  },
   editLink: {
     component: null,
   },
