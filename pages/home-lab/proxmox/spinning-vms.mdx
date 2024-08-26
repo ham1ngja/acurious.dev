@@ -1,0 +1,88 @@
+# spinning vms
+
+Now that the Proxmox server is running, it is time to transfer a few .iso files over and spin them up. The first VM I ran was Windows 11. This took a few tries, as I was being a bit stingy with the resources.
+
+## Troubleshooting
+
+After some experimentation, I settled on 2 sockets and 2 cores, and I gave it 8GB of RAM. During the installation, once I selected the language and country, I pressed Shift + F10, to pull up the command line. On there, I typed 'OOBE\BYPASSNRO', which allows you to install Windows without being connected to the internet after you reboot. Given that I do not need to connect my home lab to the internet, this was a necessary step.
+
+## Windows 11 Resource Usage
+
+Once the setup was finished, I had a chance to look at the VM usage. Not the perkiest VM I've ever run, however, it doesn't need to be super fast. In terms of RAM, Windows 11 is gobbling up 6.75 GB, a total of 85% of the allocated RAM. The server has 32 GB of RAM, and I will soon upgrade it to 64, so this isn't a massive issue.
+
+When it comes to CPU usage, it takes up less than 2% of the allocated 4 cores, which is fair, given that the machine is idle.
+
+I'll have to do some research and see if I can get away with running Windows 11 on only 4 GB of RAM, and 2 cores. In terms of the drain on the overall machine, the CPU oscillates between 0.17% and 0.35%, whilst the RAM is about 32% taken up. This last number in particular will halve once I double the RAM.
+
+As a quick side note, the 32 GB of RAM on the Beelink SER7 is single-channel. However, once you upgrade to 64 GB, it apparently becomes dual-channel.
+
+However, I also want to add a second M.2 SSD from an older project, which will add another 4TB, although it's P3, as opposed to the main SSD, which is P4. It might make sense for me to do the upgrade first, and then re-install Proxmox, if need be, as it might have to be integrated into the server.
+
+Next up, let's try it with some Linux distros.
+
+## Spinning up Pop! OS
+
+When installing Pop! OS, initially I was not going to enable disk encryption, as I won't be using my home lab for anything particularly sensitive. However, under normal circumstances, the disk would have encryption enabled, and given that this does increase the load on the machine slightly, I opted to enable it anyway, just to get some realistic readings.
+
+Although, saying this, I regret giving it only 1 core, as it seems to be struggling a little bit. Maybe this is a feature of the Installation process, and it will go down once the OS is installed, and idle. My logic is that the installer is running on top of the Demo, and so it should be using more resources than usual; however, I am aware that this might just be wishful thinking on my part.
+
+### After Install
+
+Ok, I promise I didn't test this before writing it. Once the install, reboot, and initial setup were complete, the CPU usage went from above 100%, down to consistently less than 2%. Bear in mind that it's only running on 1 core. In terms of RAM, it's using 90% of the 1 GB I've allotted to it. Fantastic.
+
+In terms of overall home-lab resource consumption, with Pop! OS idling in the background, we're seeing below 0.5% CPU usage, and about 3.85 GB of RAM being taken up, which makes up around 12.5% of the overall 32 GB available.
+
+### CPU Allocation
+
+So, I've just learnt that the number of cores you allocate to a VM isn't locked off for that machine specifically. Proxmox and your hardware will make decisions as to where resources should be allocated, based on need, so, you can allocate more cores than your machine has. The same also applies to RAM, and storage as well.
+
+I suspect resource allocation is a skill that I will need to learn in time, as there is a balance to be had here.
+
+## Spinning up Kali
+
+Kali was also very straightforward to install, just like installing it on bare metal. Just like with Pop! OS, I opted for disk encryption, as that can increase strain on the machine in some instances, and so I wanted a fair comparison.
+
+Now, at idle, Kali used less than 3% of the CPU. In terms of RAM, around 53% of the 2GB is being used up by the machine.
+
+## Overall Usage
+
+With these three VMs running, we're looking at below 0.5% CPU, and around 43% RAM usage, out of the total 32 GB.
+
+## CPU Architectures
+
+So, I now know that I can safely increase the amount of resources allocated to the machines, as it will be intelligently distributed.
+
+First off, let's allocate 8192 MB of RAM to each machine. Then, let's allocate 4 sockets and 4 cores to each. And, finally, let's swap the CPU architecture from x86-64-v2-AES to x86-64-v4, as apparently, that has extra sets of instructions for newer CPUs, and it should increase performance.
+
+Now, to test this, I'll keep the sockets and cores as they are on the Windows machine, at 2 and 2 each, for a total of 4 cores, and I'll test it out. The VM is a bit clunky with the current architecture, so we'll switch to x86-64-v4 first, and we'll see how it runs.
+
+After purely changing just the CPU architecture, it feels slightly clanky. Let's revert to the original x86-64-v2-AES architecture, but bump up the cores.
+
+Done. We're now back to the original architecture, and the sockets and cores are up to 4 each, giving us a total of 16 cores. The VM is rebooting as I write this.
+
+Interesting, no real difference. Let's also change the architecture. It is worth noting that I have been shutting down the machine before each change.
+
+No real difference. Let's have a look at some of the other architectures. Next up, there is an architecture interestingly named `host`. Let's see how this one works.
+
+Ok, this one is a bit snappier, but the OS is still quite clanky. We're looking for buttery smoothness here, which is why I've had my eye on `phenom` for the past few minutes. It says that the vendor is AMD, which is good, as my server runs on an AMD Ryzen 7 7840HS. It's last on the list, so on the principle of last in the list = better, let's try it out. Fingers and toes = crossed.
+
+```log
+swtpm_setup: Not overwriting existing state file.  
+kvm: warning: host doesn't support requested feature: CPUID.80000001H:EDX.3dnowext [bit 30]  
+kvm: warning: host doesn't support requested feature: CPUID.80000001H:EDX.3dnow [bit 31]  
+kvm: Host doesn't support requested features  
+stopping swtpm instance (pid 24747) due to QEMU startup error  
+TASK ERROR: start failed: QEMU exited with code 1
+```
+
+One minute later, all of my fingers and toes have now been thoroughly uncrossed.
+
+Ok. Not a problem. I assume the `phenom` architecture is perhaps a bit too big-brained for my Ryzen 7. Ok, let's try the one above it, which is `Opteron_G5`.
+
+Nope, it didn't work, but our new choice was not entirely unwise. Even though G5 and G4 did not work, G3 has decided to bless us.
+
+And, no change. I tried a few more architectures, with limited results, and so I switched back to x86-64-v2-AES. I'm now going to give all three VMs 8 GB of RAM and 16 cores (4 sockets/4 cores), and I'll report back on my findings.
+
+## Testing
+
+	Ok, so all VMs have received an upgrade, and they are all running concomitantly. The homelab server CPU is staying steady below 1.1%. In terms of RAM, we're looking at 45% usage, so around 14 GB of RAM. Whilst the RAM usage is the same, the CPU usage has doubled, although that is insignificant given our current setup.

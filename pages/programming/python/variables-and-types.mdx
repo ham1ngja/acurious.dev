@@ -1,0 +1,41 @@
+# variables and types
+
+Right, so let's start with variables. What are they? You can think of a variable as a box, with a label on it. For example, let's say we have a box with the label `apples`, and inside we have 5 delicious, rosy apples.
+
+# Numbers
+
+In Python, the way we would write this is as follows.
+
+```python
+apples = 5
+```
+
+Unlike maths, in Python, `=` does not mean equals. Instead, it attributes a value to the variable on the left. So, by typing `apples = 5`, we're saying that the value of the variable `apples` is `5`.
+
+Ok, so how is this abstract concept useful? Well, let's add a second variable, and I'll show you.
+
+```python3
+raspberries = 15
+```
+
+We have just declared a second variable, `raspberries`, with a value of 15.
+
+Now, for the final step, we do this.
+
+```python
+apples = 5
+raspberries = 15
+fruit = apples + raspberries
+
+print(fruit)
+```
+
+So, what just happened here? We introduced a third variable called `fruit`, and we attributed a value to it, namely the sum of `apples` and `raspberries`.
+
+Once that was done, we printed the value of the `fruit` to the command line, which in this case would be 20.
+
+Now, I know, this is marginally useful. After all, you could just add those two numbers up in your head. Why have a program for it?
+
+The example above is very simplified, to explain the idea behind variables. Now, let's assume you had 10 variables, and the user could type in values when they ran the program, instead of us giving each a value in the code itself. Once you start thinking on a larger scale, you might start to realise just how useful variables are.
+
+Luckily, variables aren't just limited to numbers. They can also do text, or strings, as they are called in programming.

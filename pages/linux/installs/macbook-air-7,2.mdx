@@ -1,0 +1,42 @@
+# linux on macbook air 7,2
+
+This is the process I went through to install Linux on an older MacBook Air 7,2 from 2015, with details in regards to troubleshooting.
+
+## Why?
+
+Why would you install Linux on an older MacBook Air? Apple only supports devices for a certain period. As they release new operating systems, eventually an older device will not be able to run the newest OS. Even though Apple tends to provide security patches even after that, eventually they stop, and the device becomes unsupported.
+
+This means that you can get yourself a great deal on an older MacBook laptop, which is no longer supported by Apple, but can run Linux just fine. Given that Linux distros can be rather lightweight, and kept up to date, you'll be able to run a new OS without any issues and continue to get security updates.
+
+## Backup
+
+If you think you might want to restore macOS on the
+laptop later on, you should clone your drive. It is possible that once you wipe the drive, you may not be able to re-install macOS, at least not without a bootable USB. Making a bootable USB using the laptop would also be a good alternative, as you'd be able to use it to re-install the OS afterwards.
+
+You should in theory be able to re-install it after, without a clone of your drive, or a USB stick, but older MacBooks are notorious for not being able to re-install after the OS is no longer supported. This, however, is beyond the scope of this article. Make a backup if you wish. If not, continue.
+
+## Bootable USB
+
+First off I downloaded an .iso from the official [System76 page](https://pop.system76.com/), as I wanted Pop OS! running on the laptop. I grabbed a USB stick and made it bootable with [balenaEtcher](https://etcher.balena.io/). This was done on my M1 MacBook Pro.
+
+## Pop OS! Installation
+
+I plugged the USB stick into the MacBook Air, and turned it on, whilst holding down the `option key`. This allowed me to boot from the USB. It is important to note that I did not keep macOS on the laptop. If you want to install Linux on a separate partition, the process would likely be a bit more complicated.
+
+The installation process was very straightforward, no issues were encountered. However, once I booted the machine up, I realised the Wi-Fi was not working.
+
+## Internet Troubleshooting
+
+I had a few options here. I have an Ethernet adapter, so I could have connected the laptop directly to the router, but I elected to connect my iPhone to it, via a lightning cable. To enable the connection, I went into `Network` on Pop OS! and enabled it under `Wired`.
+
+## Updates
+
+Once I did `sudo apt update` and `sudo apt upgrade`, the Wi-Fi still did not work, so I did `sudo apt install bcmwl-kernel-source` to install the Broadcom wireless drivers. This worked, and so I was then able to connect to Wi-Fi.
+
+## Functionality
+
+Everything other than Wi-Fi worked immediately. No issues with the speakers, display, keyboard, etc. The basic tests that I performed showed no obvious issues.
+
+## Conclusion
+
+If you have an older machine, sitting around and collecting dust, installing Linux on it is the second best thing you can do to bring it back to life (after installing an SSD). I hope you have found this to be useful!

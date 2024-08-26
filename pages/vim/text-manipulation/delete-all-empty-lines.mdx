@@ -1,0 +1,28 @@
+# delete all empty lines
+
+```vim
+:%g/^$/d
+```
+
+Let's break down the command, and see what it does.
+
+`%` applies the command to the entire text file, 
+and `g` stands for 'global', meaning it will affect all matching lines.
+
+`/^$/` is a regular expression, which matches empty lines. `^` indicates the start of the line and `$` signifies the end, so `^$` matches lines that contain nothing. `d` deletes the matched lines.
+
+## delete within a visual selection
+
+What if you have a visual selection, and you want to apply the command to that selection?
+
+```vim
+:'<,'>g/^$/d
+```
+
+`:'<,'>` specifies the range over which the command will apply. In Vim, ﻿'< and ﻿'> both refer to the start and end of the current visual selection. `'<` represents the start, and `'>` represents the end.
+
+So what you're saying is: within the start and the end of my visual selection, get all lines that contain nothing `/^$/` and then delete them with `d`
+
+If you run the command whilst in selection mode, the `:'<,'>` bit will automatically appear, so you don't have to type it out.
+
+You will notice that the command is almost identical to the one above, it's just that we're applying it to the selection, as opposed to the whole file.

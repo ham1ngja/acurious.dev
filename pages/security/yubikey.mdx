@@ -1,0 +1,61 @@
+# yubikey
+
+When logging into an account, such as your email, you may have encountered an OTP, which stands for One-Time Password.
+
+This is a form of 2FA or Two-Factor Authentication. Think of it kind of like a credit card. It's something you know (the PIN), and something you have (the card). One is useless without the other.
+
+The same works with 2FA. It's something you know (your password), and something you have (the OTP code). An OTP can be obtained through various methods, such as via email, SMS, through an app, or you can generate it using a physical key. This is where the YubiKey steps in.
+
+## Why?
+
+Why would you spend money on one? Isn't OTP sent via SMS? The issue with OTP via SMS is that your phone number can be hijacked. This is called a SIM swap attack. Someone can get your phone number, call your network, impersonate you, and say that they've lost their phone.
+
+They then ask the operator to transfer the phone number onto a new SIM. This is incredibly easy to do, and it happens all the time. After they move your phone number onto their SIM, they can intercept your OTP. If they also have your password, they're in.
+
+By generating the OTP code on something you have, like a Yubikey, the attackers would have to have physical access to the key as well. This would make it a lot more difficult for them to get in.
+
+If your password gets leaked, and they don't have the key, they can't get in. If they get the key, but they don't have the password, they still can't get in. They would need both.
+
+## How?
+
+How does the key work? When you set up 2FA on a service, such as your email, a QR code, and usually a `secret` is revealed to you temporarily.
+
+This secret is used to generate OTP codes for you. Using the Yubikey app, on either your desktop, or phone, you can capture the QR code, and save it onto the Yubikey, along with the name of the account, or a hint as to what the account is, if you want to be extra secure.
+
+You can also add a PIN to the Yubikey if you want, but in this case, obscuring what account it belongs to is much more convenient. For example, if you have one Gmail account, you can save it as Gmail, or even just email, instead of adding the actual email as well.
+
+You'll know which account it corresponds to, and if you ever lose it, and someone gains access to it, they won't be able to determine what account the OTP codes unlock.
+
+## Connectivity
+
+How do you connect the key to the device? If you plug it into your laptop, it goes into a USB port. Yubikeys come in USB-A, USB-C, and Lightning varieties, so make sure you have a USB-A or USB-C port available on your machine.
+
+You can also plug it into your phone. If you have an Android, that'll be USB-C. If you have an iPhone, that'll be Lightning for models before the iPhone 15, and USB-C for 15 and onwards.
+
+Alternatively, if your phone has NFC capabilities, which it would do if it's relatively new, you can place the key on the back of the phone, as if you were making a payment at a POS. The NFC chip inside of the phone creates an electromagnetic field, which powers the key temporarily, and enables it to transfer an OTP code.
+
+Bear in mind that not all the keys have NFC capabilities, so you'll have to check before you buy.
+
+## Storage
+
+How should you carry your Yubikey? Most people add it to their key chain, whilst some put it in their wallet. It's really up to you.
+
+## Backups
+
+Now, let's talk backups. First off, before committing a secret to the Yubikey, you should save a physical copy of the OTP secret and put it somewhere safe.
+
+If you ever lose your key, you can re-create the OTP codes from the secret. Many accounts will also give you emergency codes, which you can use to access your account if you lose your QR codes.
+
+Now, the easiest way to back up your secrets would be to print them. However, be advised that many printers keep a cache of the documents that they print. Your OS might do that as well. If you print these on a machine or printer that you do not own, the OTP secret could be compromised.
+
+Realistically, the best way to save them would be to manually write down the code, if it is available to you. This conversation can go on for a long time, and it is thus outside the scope of this article, but I just wanted to point this out to you.
+
+Alternatively, you can keep multiple copies of a Yubikey. You'd need both ready when committing a secret to the key. This way, you can add it to both, and voila, you now have a backup.
+
+You can perhaps keep one with you, and one at home, in a safe, or have it hidden away.
+
+## Conclusion
+
+There is no such thing as 100% security, or convenient security. It is a spectrum. You decide what your needs are. If you're a normal person, securing your accounts, you may not even need to go this far.
+
+Using a software OTP generator, like Google Authenticator, or even the Yubikey app itself, without a key, may suffice. However, if you work for a company, for example, or a government, and you need to secure their accounts, hardware keys are the way to go.

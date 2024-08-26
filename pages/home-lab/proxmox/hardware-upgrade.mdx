@@ -1,0 +1,72 @@
+# hardware upgrade
+
+import Image from 'next/image'
+
+<p>&nbsp;</p>
+
+<Image src="/images/SER7/SER-7-top-view.webp" alt="SER7, top view" width={1280} height={720} priority/>
+
+Next up, it's time we upgrade our SSD and RAM. So, let's turn everything off, and let's have a look at the inner workings of the machine.
+
+
+## the case
+
+To get inside the case, you need to remove 4 screws from the bottom plate, and then you need to pull on a tab to easily open it. In every video I've seen in which this machine is disassembled, the bottom plate came off easily. In my case, it needed a bit of convincing.
+
+## m.2 SSD
+
+<p>&nbsp;</p>
+
+<Image src="/images/SER7/crucial-ssd-installed-in-SER7.webp" alt="SER7 with secondary a Crucial SSD installed" width={1280} height={720}/>
+
+Either way, I got in. The first thing you see is a fan and an M.2 slot. I happen to have a 4 TB M.2 SSD from a different project, so I installed it in this machine. It is only P3, as opposed to the P4 that the machine comes with, but that's fine for most use cases.
+
+Removing the M.2 screw was a bit challenging. The `PH00` screwdriver that I used to remove the plate screws couldn't quite connect to the M.2 screw. Luckily I have a multi-tool, so by using the smaller `PH000` screwdriver head, I was able to easily remove it.
+
+## RAM
+
+<p>&nbsp;</p>
+
+<Image src="/images/SER7/RAM-removed-from-SER7.webp" alt="A SER7 machine with RAM removed" width={1280} height={720}/>
+
+Next up, we need to get to the RAM. Four screws need to be removed, two which are in plain sight, and two which are kind of hidden.
+
+WARNING: Make sure to keep track of which screw goes in what hole, as they are different sizes.
+
+Once they were removed, I gently lifted the plate off and gingerly disconnected the bottom fan from the motherboard. I then popped out the existing 32 GB of RAM and plugged in the new 64 GB, which should work as dual-channel, as opposed to the 32 GB sticks, which are single-channel.
+
+Once this was done, I made sure to plug the bottom fan back in, screwed everything back into place, and turned the machine on.
+
+Oh no. Weird whirring noise. Did I plug the fan back in incorrectly?
+
+## troubleshooting
+
+I open it back up, disconnect the fan, and then plug it back in. I turn the machine on; still whirring. Check the connector again. Did I plug it in the wrong way? I check the connector and the pins on the motherboard.
+
+The holes in the connector are not in the middle, but more towards the edge, indicating that there is only one way to plug it in.
+
+I turn the machine back on. The whirring noise of death is back. Is there an issue with the RAM? I removed the new RAM and plugged the old RAM in.
+
+No whirring. Oh no...
+
+After a few seconds of panic, I realised it couldn't be the RAM. So I remove the old chips and put the new ones back in. All the sticks are DDR5, and they have the same frequency of 5600MHz. The new chips are just a larger size, which I know the machine can handle.
+
+I reconnect the fan one more time, for good luck, and I press the power button. No weird whirring. The machine is purring like a kitten!
+
+So after my immense success, I screw everything back in, connect the Ethernet cable to the back of the machine, and oh no. My MacBook can't detect the Ethernet connection. I can't get into my server, even though it seems to be running just fine.
+
+## network
+
+Time for some more troubleshooting. I disconnect the Ethernet cable from the back of the SER7, and I connect it to an old MacBook Air, via an adaptor. The connection is immediately spotted by the M1 MacBook.
+
+Ok, so there's no issue with the cable or the dock that the other end is connected to. The issue is with the SER7.
+
+Did I accidentally damage the Ethernet port somehow during the upgrade? Unlikely, so let's investigate further.
+
+I keep the Network window open on my M1, and I reset the SER7, with the cable connected. The connection appears briefly after the reboot, and it immediately disappears once the server is up and running.
+
+Interesting. The server was installed before the upgrade, so, some of the new components are somehow interfering with things. I'm sure there's a very big-brained way to solve this on the actual server itself, but I just installed Proxmox 24 hours prior, so the small-brained option it is, then.
+
+I reboot the SER7 from my USB drive, and I re-install Proxmox. When I got to the window that allows you to configure the IP address and such, there was a green light next to the connection. That looks promising.
+
+I let the install finish, I connect from my M1, and bam, it works!

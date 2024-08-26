@@ -1,0 +1,16 @@
+# delete duplicate lines
+
+The command to delete duplicate lines is
+
+```vim
+:!uniq
+```
+
+This command requires a selection to be in place, to work. Also, it only removes duplicate lines that are next to each other. It won't remove duplicates further down the line.
+
+If you want to remove all duplicates, and you're ok with the lines being sorted, you can use `:sort u` which sorts the list alphabetically and then removes duplicate lines.
+
+```vim
+:sort u
+```
+

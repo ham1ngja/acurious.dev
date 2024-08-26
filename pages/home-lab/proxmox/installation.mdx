@@ -1,0 +1,11 @@
+# installation
+
+In order to increase my knowledge of networks, I've decided to buy a mini PC, the Beelink SER7, and use it as a Proxmox serve  Before I begin, thank you to [stuffy24](https://www.youtube.com/@stuffy24) for showing me Proxmox to begin with. That was the easy part. Now comes the hard (but fun) part.
+
+I installed Proxmox about seven times until I managed to get it to work for my specific setup. The installation went fine each time, no problem, but connecting to the server required some troubleshooting.
+
+First I tried it via ethernet, through a dock, and it did not work. Eventually, I tried a mobile Netgear router. That seemed promising; I could see both devices on the network, but I couldn't connect to the server from my MacBook.
+
+I then tried one more time via ethernet. This time, I left the settings untouched and made sure the computers were connected during the setup. The selected IP was 192.168.100.2, and the DNS was 127.0.0.1
+
+When I was done, I tried connecting to it, but it wouldn't work. I set everything manually in macOS, but it still wouldn't work. Eventually, I realised I could manually set the DNS, and once it was added as 127.0.0.1, I could finally connect to my local server!

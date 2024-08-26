@@ -1,0 +1,95 @@
+# brew
+
+Homebrew is a package manager for macOS. If you use Linux, you'll be familiar with the concept, but if you've only ever used macOS or Windows, you may never have encountered one.
+
+It is a bit like the App Store, but it is aimed at developers and power users, who like to work more with the command line. It also offers a vast array of open-source software, many of which are not available on the App Store itself.
+
+Here is how to install it, and how to use it.
+
+## Installation
+
+Open the Terminal and paste this.
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+This will install `brew` on your device.
+
+## Usage
+
+If you want to install an app, it's as easy as this.
+
+```bash
+brew install wget
+```
+
+If you want to know the installation command for a certain app, the simplest way to do it might be to go to [brew.sh](https://brew.sh) and then hit `cmd + K` to search. Interestingly, `/` works as well.
+
+If you ever get lost, you can always do this.
+
+```bash
+brew help
+```
+
+## Updates
+
+If you want to update your apps, first we need to retrieve the list of any updates that you have installed, which have newer versions available.
+
+```bash
+brew update
+```
+
+Once this is done, you can upgrade them by doing this.
+
+```bash
+brew upgrade
+```
+
+If you want to upgrade a specific app only, you can do `brew upgrade <formula>`
+
+## List
+
+If you want to view all of your installed apps, you can do this.
+
+```bash
+brew list
+```
+
+## Cleanup
+
+After a while, you might end up with outdated downloads, and older versions. If you want to clean them up, just do this.
+
+```bash
+brew cleanup
+```
+
+If you want to see all the stuff that will be removed first, run this.
+
+```bash
+brew cleanup -n
+```
+
+## Backup
+
+After you've installed a few apps, you might want to be able to easily access them in a list, so that if you ever have to re-install your OS, you can immediately re-install all of your brew apps.
+
+The way to do it is this.
+
+```bash
+brew bundle dump --file=~/.config/brew/Brewfile
+```
+
+This script will create a file called `Brewfile` which will contain a list of all installations made through `brew`. In this case, the file is saved in `~/.config/brew/` but you can of course save it anywhere you'd like.
+
+When you want to re-install all the applications, you can use this.
+
+```bash
+brew bundle --file=~/.config/brew/Brewfile
+```
+
+This will go through the list, and will re-install of your applications on your new machine.
+
+## Conclusion
+
+If you're a dev or a power user, getting `brew` is an absolute must. I hope you have found this to be helpful.

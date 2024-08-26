@@ -1,0 +1,37 @@
+# make text lowercase
+
+Sometimes you might have a list, and you want to make everything lowercase. This is especially useful if you're working with massive files.
+
+```vim
+ggVG
+```
+
+First off, run this command. This will visually select the entire text from the beginning (gg), up until the end (V and G). Then, whilst still in visual mode, run the following command, which will turn the text into lowercase.
+
+```vim
+gu
+```
+
+Alternatively, you should be able to achieve the same effect by typing out this command instead.
+
+```vim
+:%normal guG
+```
+
+`%` targets the whole file, `normal` executes a normal mode command, and `gu` makes everything lowercase, to the end of the file. Apparently, it's supposed to only act from your current cursor position, but wherever I have my cursor, it just seems to affect the whole file regardless.
+
+If you do want it to only work from where your cursor is, until the end of the file, move your cursor to the desired position, make sure you are in normal mode, and then execute this.
+
+```vim
+guG
+```
+
+This will run `gu`, which makes text lower case, to the end of the file.
+
+```vim
+gugg
+```
+
+The command above will do the opposite. It will run `gu` from the current cursor position, to the start of the file.
+
+This command can also work on the current line. If you place your cursor somewhere inside of your line, running `gu0` will make everything from the cursor to the start of the line, lowercase. Alternatively, if you run `gu$`, it will make everything to the right of the cursor lowercase.

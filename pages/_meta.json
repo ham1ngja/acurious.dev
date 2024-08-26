@@ -1,15 +1,19 @@
 {
-  "index": "Introduction",
-  "another": "Another Page",
-  "advanced": "Advanced (A Folder)",
-  "about": {
-    "title": "About",
-    "type": "page"
+  "contact": {"title": "Contact ↗", "type": "page", "href": "mailto:hello@acurious.dev", "newWindow": true},
+  "disclaimer": { "title": "Disclaimer", "type": "page"
   },
-  "contact": {
-    "title": "Contact ↗",
-    "type": "page",
-    "href": "https://twitter.com/shuding_",
-    "newWindow": true
-  }
+
+  "index": "hello",
+
+  "--": {"type": "separator", "title": "💾 projects"},
+  "home-lab": "home lab",
+  "scripts": "scripts",
+
+  "---": {"type": "separator", "title": "🧠 learning"},
+  "backup" : "backup",
+  "linux" : "linux",
+  "macos": "macOS",
+  "programming": "programming",
+  "security": "security",
+  "vim": "vim"
 }

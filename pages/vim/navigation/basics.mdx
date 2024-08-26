@@ -1,0 +1,31 @@
+# basics
+
+The way you navigate around vim can be rather counterintuitive at first. Using h, j, k, and l, instead of the arrow keys feels supremely strange. This was done in order to keep your fingers on the home row. That being said, other components of basic navigation seem far more natural. 
+
+But let's not get ahead of ourselves here. First off, how do you go left and right? Well, you could use the arrow keys, but you'll want to get yourself used to using `h` for left, and `l` for right.
+
+Why? One of the fantastic features of Vim is that it's keyboard-centric. In other words, you can do everything with the keyboard. This allows you to ignore your mouse, and enter a state of flow, whether you're writing code, or anything else.
+
+Ok, so we've established how to navigate left and right; what about up and down? To go up, you do `k`, and to go down, you do `j`. Now, I'm going to be honest. Even after a while, I still find `j` and `k` to be counterintuitive. However, I've come up with a clever little way to distinguish them.
+
+`j` kind of looks like the grip, or handle, of an umbrella. I just imagine Mary Poppins descending, with her umbrella, and thus I associate `j` with down.
+
+When it comes to `k`, I must admit I am rather less imaginative, and I simply picture stairs going up, as the K kind of looks light a flight of stairs, with the spine being a wall, the upper bit on the right going up, and the lower bit on the right going down.
+
+## what about the intuitive bit?
+
+I did mention an intuitive bit, didn't I? Let's say you want to go down twelve lines. How do you do this? The uninitiated might hit the `j` key twelve times. However, there is a better way.
+
+All you have to do is first, make sure you're in normal mode by pressing `Esc`, and then just type `12j`. This will take you down 12 lines. As you might imagine the same works for `k`, `h`, and `l`.
+
+How magical is that? It gets even better. What if you want to advance by twelve words? In that case, you just have to type `12w`. This will move twelve words to the right, with the cursor landing at the start of the word. If you do `12e`, this will do the same thing, but the cursor will land at the end of the word.
+
+You'd choose one or the other, depending on where you want to insert some more text. Also, as you might imagine, `w` and `e` work by themselves too, so you can go word by word if you wish.
+
+What if you want to move backwards? Then you do `b`, to go to the start of the previous word, or do `ge`, to go to the end of the previous word.
+
+## bigger picture
+
+What if you want to do some bigger-picture stuff, like going to the start or end of a line? In that case, you just press `0`, to go to the start, or `$`, to go to the end.
+
+What if you want to navigate to the start of the file or the end? That would be `gg` to go to the top, and `G` to go to the bottom. The way I differentiate them is by thinking: `gg`, you're finally using a proper text editor (wink). 
