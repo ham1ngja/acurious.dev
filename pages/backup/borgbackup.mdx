@@ -1,93 +1,80 @@
 # borgbackup
 
-Having lost small amounts of data in the past, due to hard drive failures and the like, I have implemented an automated backup system that keeps all of my important files safe and disseminates them to various locations, to avoid catastrophic data loss due to issues such as fire, theft, or mechanical failure, just to name a few.
-
-## Why Borgbackup?
-
-I've looked at a few options, but Borg stuck out for a few reasons. One being reliability, and the other being the fact that it does deduplication. In other words, it doesn't save full files over and over, but whenever you make a modification, it only saves what has been modified, thus saving you space.
-
-For example, if you're working on a document, and you add a few lines to it, the Borg won't backup the full file again, but just the new lines you typed in today. This saves a tremendous amount of space over time.
+Borgbackup is a deduplicating archiver with compression and encryption. It allows you to store encrypted backups of your data in a space-efficient way. 
 
 ## Installation
 
-I'm on macOS, so I'll cover the steps that I took. If you want to run it on Linux, I'm sure the steps will be fairly similar, apart from the fact that you'd be using a different packet manager. 
+To install borgbackup on macOS, you first need Homebrew, which is a macOS packet manager. You can read more about `brew` in [this section](/macos/brew).
 
-To install borgbackup, you first need to install Homebrew, which is a macOS packet manager. If you want to read more about brew, I've covered it in [a different article](/macos/brew).
-
+To begin with, run this:
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-This is the command to do so. Once you have installed it, it's time to install borgbackup.
+Once `brew` has been installed, use this to install `borgbackup`:
 
 ```bash
 brew install borgbackup
 ```
 
-This should be straightforward enough. Next up, creating a repository. A repo is a special file which will contain all of your backups, in the form of snapshots. If you need to recover a file as it was at a certain point in time, you interact with that file, and extract the appopriate archive. We'll talk about that a bit later on.
+## Create a Repo
 
-## Create Repo
+At its most basic level, `borg` works with repositories, or repos, which are used to store your archives. To create a repo, which uses `lz4` compression by default, run this command:
 
 ```bash
 borg init --encryption=repokey /path/to/repo
 ```
 
-This creates a new repo and uses lz4 compression by default. There are quite a few arguments you can pass to borgbackup. I'm going to cover the main ones here. If you'd like to learn more about it, you can do `man borg`
-
 ### Add Archive to Repo
 
+Once a repo has been created, an archive can be added. In the example below, the archive name will contain the current date and time.
+
 ```bash
-borg create --stats --progress ~/borg::'local-{now:%Y-%m-%d-%H%M%S}'
+borg create --stats --progress ~/repo::'local-{now:%Y-%m-%d-%H%M%S}'
 ```
-
-This creates a new archive named after the current time and date. You can type in anything after :: and that would be the name otherwise. You don't have to do it this way, as you can name your archives anything you like. I like this format, so that's what I'm using.
-
-In regards to the name of the repo, mine is simply called `borg` in this example. On my machine, I actually have two, named `borg.local` and `borg.cloud`, but we'll get into that a bit later on.
 
 ### Show Archives in Repo
 
-```bash
-borg list ~/borg
-```
+To display all archives present in a repo, run:
 
-This command will show you all of the archives present in the repo. The command in the previous chapter names them logically, and the backups are created automatically, so you should be able to easily find the one you need to extract.
+```bash
+borg list ~/repo
+```
 
 ### Extra Repo Info
 
-```bash
-borg list ~/borg
-```
+To obtain more information about the repo, run:
 
-This will give more information on the repo if needed.
+```bash
+borg list ~/repo
+```
 
 ### Extract Archive
 
+To test your backup, or to recover a previous version of a file, or directory, run:
+
 ```bash
-borg extract ~/borg::local-2024-06-02-061006
+borg extract ~/repo::archive_name
 ```
 
-This is an example of how extraction works. After using `borg list`, you can then extract the entire archive. This will extract the full archive in the current directory.
-
-Bear in mind that the archive that you specify is essentially a snapshot in time. It will recreate your files as they were when that backup was made. Alternatively, we can use this command to extract a specific directory from the archive.
+If you would like to extract a specific directory from the archive, run:
 
 ```bash
-borg extract ~/borg::local-2024-06-02-061006 /path/to/extract
+borg extract ~/repo::archive_name /path/to/extract
 ```
 
 ### Add Password to Keychain
 
-To not have to type in the password each time you run a backup, you can save it to the Keychain, and then retrieve it with the script. This is macOS-specific. I'm sure Linux probably has something similar.
+On macOS, you have the option to add your repo password to the keychain, via the Terminal. This can be retrieved later on, in order to run the script without typing the password each time.
 
 ```bash
 security add-generic-password -a borg -s BorgBackup -w 'your_password_here'
 ```
 
-## The Script
+## Script
 
-Ok, so now that I've covered all of this, I'll show you the script that I use. It's a pretty straightforward bash script which does a few things.
-
-I'll first drop it in its entirety here, but I'll then go bit by bit after, and explain what each portion of the code does. If you want to use the script, but you're not very familiar with Borg or bash scripting, I recommend you read the step-by-step portion below.
+The script below is an example of how `borg` can be automated with `Bash`, in order for the backups to occur seamlessly in the background.
 
 ```bash
 #!/bin/bash
@@ -112,7 +99,7 @@ rsync -av --delete ~/borg/borg.local "/Volumes/borg" ; rsync -av --delete ~/borg
 echo -e "\n[$(date +"%T")] Local Borg Backup Complete. \n\n"
 ```
 
-I know this might look intimidating at first glance, but let's go through it step by step, so that you understand what it does.
+Below you will find the same script, explained step by step.
 
 ### Initialisation Echo
 
@@ -120,27 +107,29 @@ I know this might look intimidating at first glance, but let's go through it ste
 echo -e "\n[$(date +"%T")] Local Borg Backup Initialising.\n"
 ```
 
-This prints the first message we see, adding the current time at the start of the message. This is incredibly useful, as it allows us to easily keep track of when an update was initialised.
+This prints an initial message, outputting the current time at the start.
 
 ### Brew Backup
+
+When creating a backup, some users prefer to save their `Brewfile` as well. This file contains a list of all of the applications installed through `brew`.
+
+The code below removes the existing Brewfile silently, and `brew bundle dump` creates an up-to-date version of it.
 
 ```bash
 rm -f ~/.config/brew/Brewfile && brew bundle dump --file=~/.config/brew/Brewfile
 ```
 
-Now, if you want to back up your brew apps, you can just have a look inside of the `/opt` directory, however, maybe you don't have the space to spare, and you just want a list of apps, that you can easily use to re-install later.
-
-`brew bundle dump` does exactly that. This script saves it to `~/.config/brew/Brewfile`, but first, it removes the older version of that file if it is already there, and it does so without asking for confirmation.
-
 ### Restore Brewfile
 
-When you want to restore the Brewfile, all you need to do is this.
+In the event that re-installing all of your brew applications is necessary, such as when starting on a new machine, run this to restore it:
 
 ```bash
-brew bundle --file=~/.config/brew/Brewfile
+brew bundle --file=~/path/to/Brewfile
 ```
 
 ### File Paths
+
+The next section of the script creates an array of paths. When creating your backup, you can decide which files and directories are to be included. An array is a human-readable way to include every path.
 
 ```bash
 paths=(
@@ -149,49 +138,45 @@ paths=(
 )
 ```
 
-Ok, so what does this bit do? It allows you to add a bunch of paths in a human-readable way. Initially, the script didn't involve an array, so I had to have all paths like this:
+import { Callout } from 'nextra/components'
 
-```bash
-"path1" "path2" "path3"
-```
-
-As you might imagine, that got messy very quickly. If you add them in an array, you can have one on each line, thus making it a lot easier to keep track of everything. You can even have empty lines between the lines, to visually separate things.
-
-You can back up either files or directories, in whatever order you deem logical.
+<Callout emoji="💡"> If you wish to add visual separation between groups of paths, you may leave empty lines.</Callout>
 
 ### Perform Backup
 
+The next snippet of code can be broken down into two. This first line retrieves the repository password from the macOS keychain.
+
 ```bash
-BORG_PASSPHRASE=$(security find-generic-password -a borg -s BorgBackup -w) borg create --stats --progress ~/borg/borg.local::'local-{now:%Y-%m-%d-%H%M%S}' "${paths[@]}"
+BORG_PASSPHRASE=$(security find-generic-password -a borg -s BorgBackup -w)
 ```
 
-Ok, this one looks a bit scary, so let's dig in. The first bit of it, up until `-w)` retrieves the password from the macOS keychain. I've explained how to save it earlier in this article.
+The second snippet creates an archive within a repo called `borg.local`. The `"${paths[@]}"` section specifies that the entirety of the array must be used.
 
-The point of this is to avoid having to type in the password every time you want to do a backup. The second part of the code is what creates the actual archive within the repo. It uses the current date and time to name it.
-
-Then, we have `"${paths[@]}"`. This tells the script to backup all of the paths mentioned in the array above.
+```bash
+borg create --stats --progress ~/borg/borg.local::'local-{now:%Y-%m-%d-%H%M%S}' "${paths[@]}"
+```
 
 ### Dissemination
 
-Ok, so you've made your local backup. That's great, but you should probably make a few copies of it. In this case, I use rsync. If you don't already have it installed, you can do so with `brew install rsync`.
+If you wish, you can use `rsync` in order to disseminate copies of your repos to various destinations. If you do not have `rsync` installed, you may do so by running:
+
+```bash
+brew install rsync
+```
+
+Once installed, you can modify the command below as you wish, to make various copies. The example provided takes the `borg.local` repo, and copies it to an SD card and an external SSD.
 
 ```bash
 rsync -av --delete ~/borg/borg.local "/Volumes/borg" ; rsync -av --delete ~/borg/borg.local "/Volumes/borg.ssd"
 ```
 
-In this case, this command makes two copies, one on an SD card, and one on an external SSD. If you want, you can even make a copy to iCloud, if you want a cloud backup.
-
 ### Cloud Backups
 
-In my case, I have two borg backups. One is local, and one is for the cloud. The local one is much larger, and the cloud one is very lightweight. The cloud repo gets copied to my iCloud, using rsync, and it also gets backed up with a couple more cloud services.
-
-This is not supposed to be an endorsement of any cloud service, so I won't mention the ones I use. It is up to you to do your research, and decide which you want to pick.
+In order to provide more redundancy, you may also make cloud backups of your repositories. This can either be done through `rsync`, or any other third-party app, depending on which cloud backup provider you choose.
 
 ## Backup Automation
 
-Now, the `backup.sh` script that I use is useful for one-off backups. If you want to automate the backups every few hours, you can either use cron jobs, or you can use a simpler method. I don't know which one is better.
-
-Mine involves a bit more faff, as I have to re-run it every time I reboot (which isn't that often), but I can easily cancel it if I need to. I have a second .sh file, which looks like this.
+Once the backup script has been created, you may use a variation of the code below, in order to run it periodically.
 
 ```bash
 #!/bin/bash
@@ -207,40 +192,36 @@ echo -e "The next backup will run at [$(date -v +4H +"%T")]\n"
 done
 ```
 
+Below is a step-by-step explanation of the code.
+
 ### Loop
 
 The while true loop just runs forever, until you cancel the script.
 
 ### Run
 
+This runs the main script, which is what creates the backups.
+
 ```bash
 bash "/path/to/backup.sh"
 ```
 
-This runs the main script, which does all of the actual backing up.
-
 ### Echo
+
+This prints when the next backup will occur. In this particular example, it states that the next backup will occur 4 hours from the current time.
 
 ```bash
 echo -e "The next backup will run at [$(date -v +4H +"%T")]\n"
 ```
 
-This prints when the next backup will take place. It pulls the current time, and it adds 4 hours to it, as I like to do my backups every 4 hours.
-
 ### Sleep
+
+In order for the next backup to be delayed accordingly, `sleep` must be used. The example below waits for 14400 seconds, which is 240 minutes, or 4 hours. Once the time has elapsed, the loop is initiated again.
 
 ```bash
 sleep 14400
 ```
 
-This bit tells the script to wait 14400 seconds, which is 240 minutes, or 4 hours. Once the time has elapsed, it goes through the while loop again.
-
-I'm sure there's a much more big-brained way of doing this, but sometimes, when you're prototyping something, you just need to get it to work. I can always improve upon the design at a later date.
-
 ### Permissions
 
-If running either script does not work, make sure you make the script executable by doing `chmod +x backup.sh`, and then try again.
-
-## Conclusion
-
-In conclusion, my important data is backed up on my computer, an SD card, and an external SSD, as well as on a few cloud services. This is a reasonable amount of protection for most people. You can always do a lot more, but sometimes, you need to find a balance between security and convenience, and in my case, this works great.
+Sometimes permissions need to be given to the scripts, in order to work. If that is the case, `chmod +x script.sh` should solve the issue.
